@@ -27,8 +27,14 @@ namespace school_meals
 
         private string substring_menu(string text)
         {
-            string temp = Regex.Replace(text, "[0-9\\.]", "");
-            return temp;
+            string[] lines = text.Split('\n');
+            for (int i = 0; i < lines.Length; i++)
+            {
+                string line = lines[i];
+                if (line.Contains("("))
+                    lines[i] = line.Substring(0, line.IndexOf('('));
+            }
+            return string.Join("\n", lines);
         }
         private void getschoolmeals()
         {
@@ -44,7 +50,7 @@ namespace school_meals
             for (int i = 0; i < loop_count; i++)
             {
                 driver.Navigate().GoToUrl($"{uri.Scheme}://{uri.Host}/{uri.Host.Split('.')[0]}/dv/dietView/selectDietCalendarView.do?dietDate={today_year}/{target_month}/{i}");
-                string menu = Regex.Replace(driver.FindElement(By.XPath("//*[@id='subContent']/div/div[3]/div[2]/table/tbody/tr[2]/td")).Text, "[0-9\\.]", "");
+                string menu = substring_menu(driver.FindElement(By.XPath("//*[@id='subContent']/div/div[3]/div[2]/table/tbody/tr[2]/td")).Text);
                 string calorie = driver.FindElement(By.XPath("//*[@id='subContent']/div/div[3]/div[2]/table/tbody/tr[4]/td")).Text;
             }
         }
