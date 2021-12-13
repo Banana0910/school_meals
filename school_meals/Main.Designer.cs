@@ -40,9 +40,10 @@ namespace school_meals
             this.target_month_box = new System.Windows.Forms.TextBox();
             this.sub_btn = new System.Windows.Forms.Button();
             this.add_btn = new System.Windows.Forms.Button();
-            this.save_excel = new System.Windows.Forms.Button();
+            this.save_excel_btn = new System.Windows.Forms.Button();
             this.progress = new System.Windows.Forms.ProgressBar();
             this.status_label = new System.Windows.Forms.Label();
+            this.save_open_excel_btn = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // school_url_box
@@ -142,15 +143,15 @@ namespace school_meals
             this.add_btn.UseVisualStyleBackColor = true;
             this.add_btn.Click += new System.EventHandler(this.add_btn_Click);
             // 
-            // save_excel
+            // save_excel_btn
             // 
-            this.save_excel.Location = new System.Drawing.Point(132, 231);
-            this.save_excel.Name = "save_excel";
-            this.save_excel.Size = new System.Drawing.Size(484, 23);
-            this.save_excel.TabIndex = 8;
-            this.save_excel.Text = "엑셀로 저장";
-            this.save_excel.UseVisualStyleBackColor = true;
-            this.save_excel.Click += new System.EventHandler(this.save_excel_Click);
+            this.save_excel_btn.Location = new System.Drawing.Point(132, 231);
+            this.save_excel_btn.Name = "save_excel_btn";
+            this.save_excel_btn.Size = new System.Drawing.Size(239, 23);
+            this.save_excel_btn.TabIndex = 8;
+            this.save_excel_btn.Text = "엑셀로 저장";
+            this.save_excel_btn.UseVisualStyleBackColor = true;
+            this.save_excel_btn.Click += new System.EventHandler(this.save_excel_btn_Click);
             // 
             // progress
             // 
@@ -168,15 +169,26 @@ namespace school_meals
             this.status_label.TabIndex = 10;
             this.status_label.Text = "아무 작업 없음";
             // 
+            // save_open_excel_btn
+            // 
+            this.save_open_excel_btn.Location = new System.Drawing.Point(377, 232);
+            this.save_open_excel_btn.Name = "save_open_excel_btn";
+            this.save_open_excel_btn.Size = new System.Drawing.Size(239, 23);
+            this.save_open_excel_btn.TabIndex = 11;
+            this.save_open_excel_btn.Text = "엑셀로 저장 후 열기";
+            this.save_open_excel_btn.UseVisualStyleBackColor = true;
+            this.save_open_excel_btn.Click += new System.EventHandler(this.save_open_excel_btn_Click);
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(628, 266);
+            this.Controls.Add(this.save_open_excel_btn);
             this.Controls.Add(this.status_label);
             this.Controls.Add(this.progress);
-            this.Controls.Add(this.save_excel);
+            this.Controls.Add(this.save_excel_btn);
             this.Controls.Add(this.add_btn);
             this.Controls.Add(this.sub_btn);
             this.Controls.Add(this.target_month_box);
@@ -207,12 +219,13 @@ namespace school_meals
         private System.Windows.Forms.TextBox target_month_box;
         private System.Windows.Forms.Button sub_btn;
         private System.Windows.Forms.Button add_btn;
-        private System.Windows.Forms.Button save_excel;
+        private System.Windows.Forms.Button save_excel_btn;
         private System.Windows.Forms.ColumnHeader columnHeader1;
         private System.Windows.Forms.ColumnHeader columnHeader2;
         private System.Windows.Forms.ColumnHeader columnHeader3;
         private System.Windows.Forms.ProgressBar progress;
         private System.Windows.Forms.Label status_label;
+        private System.Windows.Forms.Button save_open_excel_btn;
     }
 }
 

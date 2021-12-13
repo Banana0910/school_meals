@@ -10,6 +10,7 @@ using Excel = Microsoft.Office.Interop.Excel;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Drawing;
+using System.Diagnostics;
 
 namespace school_meals
 {
@@ -39,10 +40,18 @@ namespace school_meals
             status_label.Text = $"진행 중.. ({value}/{max})";
             progress.Value = value;
         }
+
         private void setprogress(string msg, int value)
         {
             status_label.Text = $"{msg}.. ({value}%)";
             progress.Value = value;
+        }
+
+        private void initprogress()
+        {
+            status_label.Text = "아무 작업 없음";
+            progress.Value = 0;
+            progress.Maximum = 100;
         }
 
         private void getschoolmeals(string url)
@@ -83,8 +92,7 @@ namespace school_meals
                     setvalue(i, loop_count);
                 }
                 driver.Quit();
-                status_label.Text = "아무 작업 없음";
-                progress.Value = 0;
+                initprogress();
                 MessageBox.Show("파싱 완료", "school_meals", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception e)
@@ -156,72 +164,11 @@ namespace school_meals
             new Thread(() => getschoolmeals(school_url_box.Text)).Start();
         }
 
-        private void save_excel_Click(object sender, EventArgs e)
+        private void save_excel_btn_Click(object sender, EventArgs e)
         {
-            try
-            {
-                progress.Maximum = 100;
-
-                setprogress("파일 생성 중", 0);
-                Excel.Application app = new Excel.Application();
-                app.Visible = false;
-                Excel.Workbook wb = app.Workbooks.Add();
-                Excel.Worksheet sheet = (Excel.Worksheet)wb.Sheets.Add();
-                sheet.Name = "정보";
-
-                setprogress("정보 작성 중", 50);
-                int line = 0;
-                foreach (ListViewItem lvi in meals.Items)
-                {
-                    int weekday = (int)Convert.ToDateTime(lvi.SubItems[0].Text).DayOfWeek;
-                    if (weekday == 0)
-                        line++;
-                    if (weekday == 0 || weekday == 6)
-                        continue;
-                    for (int i = 0; i < 3; i++)
-                        sheet.Cells[line*3+(i+1),weekday] = lvi.SubItems[i].Text;
-                    setprogress(lvi.SubItems[0].Text, progress.Value + 1);
-                }
-
-                setprogress("다듬는 중", 85);
-                
-                sheet.Range[sheet.Columns[1], sheet.Columns[5]].ColumnWidth = 18;
-                for (int i = 0; i <= 4; i++)
-                    sheet.Range[sheet.Rows[2+i*3], sheet.Rows[2+i*3]].RowHeight = 150;
-
-                Excel.Range range = sheet.Range[sheet.Cells[1,1], sheet.Cells[line*4-1,5]];
-                range.BorderAround2(Type.Missing, Excel.XlBorderWeight.xlThick, Excel.XlColorIndex.xlColorIndexAutomatic, Type.Missing);
-                range.Borders.LineStyle = Excel.XlLineStyle.xlContinuous;
-                range.HorizontalAlignment = 3;
-
-                setprogress("파일 저장 중", 95);
-
-                int file_num = 0;
-                string path = "";
-                while (true)
-                {
-                    path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), $"급식{file_num}.xlsx");
-                    if (!File.Exists(path))
-                    {
-                        wb.SaveAs(path, Excel.XlFileFormat.xlWorkbookDefault);
-                        break;
-                    }
-                    else
-                    {
-                        file_num++;
-                    }
-                }
-                wb.Close(true);
-                app.Quit();
-                ReleaseExcelObject(wb);
-                ReleaseExcelObject(app);
-                setprogress("완료", 100);
+            string path = save_excel();
+            if (path != "error")
                 MessageBox.Show($"바탕화면에 [{Path.GetFileName(path)}](으)로 저장되었습니다", "school_meals", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"에러 : {ex}");
-            }
         }
 
         private void ReleaseExcelObject(object obj)
@@ -245,6 +192,72 @@ namespace school_meals
             }
         }
 
+        private string save_excel()
+        {
+            try
+            {
+                progress.Maximum = 100;
+
+                setprogress("파일 생성 중", 0);
+                Excel.Application app = new Excel.Application();
+                app.Visible = false;
+                Excel.Workbook wb = app.Workbooks.Add();
+                Excel.Worksheet sheet = (Excel.Worksheet)wb.Sheets.Add();
+                sheet.Name = "정보";
+
+                setprogress("정보 작성 중", 50);
+                int line = 0;
+                foreach (ListViewItem lvi in meals.Items)
+                {
+                    int weekday = (int)Convert.ToDateTime(lvi.SubItems[0].Text).DayOfWeek + 1;
+                    if (weekday == 1)
+                        line++;
+                    for (int i = 0; i < 3; i++)
+                        sheet.Cells[line * 3 + (i + 1) + line, weekday] = lvi.SubItems[i].Text;
+                    setprogress(lvi.SubItems[0].Text, progress.Value + 1);
+                }
+
+                setprogress("다듬는 중", 85);
+
+                sheet.Range[sheet.Columns[1], sheet.Columns[7]].ColumnWidth = 18;
+                for (int i = 0; i <= line+1; i++)
+                    sheet.Range[sheet.Rows[2 + i * 4], sheet.Rows[2 + i * 4]].RowHeight = 150;
+
+                Excel.Range range = sheet.Range[sheet.Cells[1, 1], sheet.Cells[line * 4 - 1, 7]];
+                range.BorderAround2(Type.Missing, Excel.XlBorderWeight.xlThick, Excel.XlColorIndex.xlColorIndexAutomatic, Type.Missing);
+                range.Borders.LineStyle = Excel.XlLineStyle.xlContinuous;
+                range.HorizontalAlignment = 3;
+
+                setprogress("파일 저장 중", 95);
+
+                int file_num = 0;
+                string path = "";
+                while (true)
+                {
+                    path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), $"급식{file_num}.xlsx");
+                    if (!File.Exists(path))
+                    {
+                        wb.SaveAs(path, Excel.XlFileFormat.xlWorkbookDefault);
+                        break;
+                    }
+                    file_num++;
+                }
+                wb.Close(true);
+                app.Quit();
+                ReleaseExcelObject(wb);
+                ReleaseExcelObject(app);
+                setprogress("완료", 100);
+                initprogress();
+                return path;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"에러 : {ex}");
+                initprogress();
+                return "error";
+            }
+        }
+
         private void meals_DoubleClick(object sender, EventArgs e)
         {
             foreach (ListViewItem lvi in meals.SelectedItems)
@@ -252,6 +265,13 @@ namespace school_meals
                 Form form = new Information_Form(lvi.SubItems[0].Text, lvi.SubItems[1].Text, lvi.SubItems[2].Text);
                 form.Show();
             }
+        }
+
+        private void save_open_excel_btn_Click(object sender, EventArgs e)
+        {
+            string path = save_excel();
+            if (path != "error")
+                Process.Start(path);
         }
     }
 }
