@@ -11,3 +11,5 @@ C:\Users\Banana\Desktop\Desktop\MyWork\Windows Form\school_meals\school_meals\ob
 C:\Users\Banana\Desktop\Desktop\MyWork\Windows Form\school_meals\school_meals\obj\Debug\school_meals.exe
 C:\Users\Banana\Desktop\Desktop\MyWork\Windows Form\school_meals\school_meals\obj\Debug\school_meals.pdb
 C:\Users\Banana\Desktop\Desktop\MyWork\Windows Form\school_meals\school_meals\obj\Debug\school_meals.Information_Form.resources
+C:\Users\Banana\Desktop\Desktop\MyWork\Windows Form\school_meals\school_meals\obj\Debug\school_meals.csproj.SuggestedBindingRedirects.cache
+C:\Users\Banana\Desktop\Desktop\MyWork\Windows Form\school_meals\school_meals\obj\Debug\school_meals.csproj.CopyComplete

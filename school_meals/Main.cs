@@ -196,37 +196,42 @@ namespace school_meals
         {
             try
             {
-                progress.Maximum = 100;
+                const int start_weekday = 2;
+                const int end_weekday = 8;
 
-                setprogress("파일 생성 중", 0);
+                setprogress("파일 생성 중", 10);
+
                 Excel.Application app = new Excel.Application();
                 app.Visible = false;
                 Excel.Workbook wb = app.Workbooks.Add();
-                Excel.Worksheet sheet = (Excel.Worksheet)wb.Sheets.Add();
+                Excel.Worksheet sheet = wb.Sheets[1];
                 sheet.Name = "정보";
 
                 setprogress("정보 작성 중", 50);
+
                 int line = 0;
                 foreach (ListViewItem lvi in meals.Items)
                 {
-                    int weekday = (int)Convert.ToDateTime(lvi.SubItems[0].Text).DayOfWeek + 1;
-                    if (weekday == 1)
+                    int weekday = (int)Convert.ToDateTime(lvi.SubItems[0].Text).DayOfWeek + 2;
+                    if (weekday == 2)
                         line++;
                     for (int i = 0; i < 3; i++)
-                        sheet.Cells[line * 3 + (i + 1) + line, weekday] = lvi.SubItems[i].Text;
+                        sheet.Cells[(line * 3) + line + i + 2, weekday] = lvi.SubItems[i].Text;
                     setprogress(lvi.SubItems[0].Text, progress.Value + 1);
                 }
 
                 setprogress("다듬는 중", 85);
 
-                sheet.Range[sheet.Columns[1], sheet.Columns[7]].ColumnWidth = 18;
-                for (int i = 0; i <= line+1; i++)
-                    sheet.Range[sheet.Rows[2 + i * 4], sheet.Rows[2 + i * 4]].RowHeight = 150;
-
-                Excel.Range range = sheet.Range[sheet.Cells[1, 1], sheet.Cells[line * 4 - 1, 7]];
-                range.BorderAround2(Type.Missing, Excel.XlBorderWeight.xlThick, Excel.XlColorIndex.xlColorIndexAutomatic, Type.Missing);
-                range.Borders.LineStyle = Excel.XlLineStyle.xlContinuous;
-                range.HorizontalAlignment = 3;
+                sheet.Range[sheet.Columns[start_weekday], sheet.Columns[end_weekday]].ColumnWidth = 18;
+                sheet.Columns[1].ColumnWidth = 1.25;
+                sheet.Rows[1].RowHeight = 12;
+                for (int i = 0; i <= line; i++)
+                {
+                    sheet.Rows[(i * 4) + 3].RowHeight = 150;
+                    Excel.Range range = sheet.Range[sheet.Cells[(i * 4) + 2, start_weekday], sheet.Cells[(i * 4) + 4, end_weekday]];
+                    range.Borders.LineStyle = Excel.XlLineStyle.xlContinuous;
+                    range.HorizontalAlignment = 3;
+                }
 
                 setprogress("파일 저장 중", 95);
 

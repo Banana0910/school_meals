@@ -56,11 +56,11 @@ namespace school_meals
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(55, 9);
+            this.label1.Location = new System.Drawing.Point(27, 9);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(71, 15);
+            this.label1.Size = new System.Drawing.Size(99, 15);
             this.label1.TabIndex = 1;
-            this.label1.Text = "학교 사이트";
+            this.label1.Text = "창원 학교 사이트";
             // 
             // meals
             // 
@@ -203,7 +203,7 @@ namespace school_meals
             this.Name = "Main";
             this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "학교 급식 크롤러";
+            this.Text = "창원 학교 급식 크롤러";
             this.ResumeLayout(false);
             this.PerformLayout();
 
